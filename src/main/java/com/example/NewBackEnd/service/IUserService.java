@@ -10,8 +10,9 @@ import com.example.NewBackEnd.exception.BaseException;
 
 import java.util.UUID;
 
-public interface IUserService extends IGenericService<UserResponse> {
+//public interface IUserService extends IGenericService<UserResponse> {
+    public interface IUserService {
     JwtAuthenticationResponse login(LoginRequest loginRequest) throws BaseException;
-    JwtAuthenticationResponse create(CreateUserRequest createUserRequest) throws BaseException;
-    UserResponse updateUser(UUID userId, UpdateUserRequest updateUserRequest) throws BaseException;
+//    JwtAuthenticationResponse create(CreateUserRequest createUserRequest) throws BaseException;
+//    UserResponse updateUser(UUID userId, UpdateUserRequest updateUserRequest) throws BaseException;
 }
