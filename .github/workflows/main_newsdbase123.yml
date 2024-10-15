@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy JAR app to Azure Web App - newswebapp
+name: Build and deploy JAR app to Azure Web App - newsdbase123
 
 on:
   push:
@@ -19,7 +19,7 @@ jobs:
       - name: Set up Java version
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '17'
           distribution: 'microsoft'
 
       - name: Build with Maven
@@ -49,15 +49,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_74837AA10FC84EA3B82549BE25C9F6B6 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E1F0BE29C6DA4BA38C263402EA69766E }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_93999DE84E7D421394F9252745F7AFEF }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_3B1707F224C1408291A38118BC98DD5E }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_1CEB310ED5DC461A9D0623D4E7B4D959 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DA26E887F5D8478686C4128908F0F5E3 }}
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'newswebapp'
+          app-name: 'newsdbase123'
           slot-name: 'Production'
           package: '*.jar'
           
