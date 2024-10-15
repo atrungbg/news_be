@@ -37,7 +37,7 @@ public class OpenApiConfig {
                         .license(new License().name("API License").url("http://domain.vn/license")))
                 .servers(List.of(
  //                   new Server().url("http://localhost:" + serverPort + "/").description("Local Server")
-                       new Server().url("newswebapp-fwgvfdc2fkacgkg4.canadacentral-01.azurewebsites.net/").description("Azure Server")
+                       new Server().url("http://newsdbase123-azcubjauakbjh7ar.canadacentral-01.azurewebsites.net/").description("Azure Server")
                 ))
                 .components(new Components().addSecuritySchemes(
                         "bearerAuth",
