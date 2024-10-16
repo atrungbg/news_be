@@ -53,14 +53,11 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "PhoneNumber", length = 20)
     private String phoneNumber;
 
-
-    @Column(length = 20)
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    private String role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role));
     }
 
     @Override

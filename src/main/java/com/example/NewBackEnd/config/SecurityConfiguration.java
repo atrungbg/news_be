@@ -40,7 +40,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(request -> request.anyRequest().permitAll())
 //                .authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**",
-//                                "/api/v1/account/create",
+//                                "/api/v1/account/**",
 //                                "/swagger-ui/**",
 //                                "/swagger-ui.html",
 //                                "swagger-resources/**",
@@ -58,9 +58,6 @@ public class SecurityConfiguration implements WebMvcConfigurer {
         return http.build();
     }
 
-
-
-
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
@@ -73,7 +70,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://greenbag-e3bnc3hwc7exebep.eastus-01.azurewebsites.net"));
+        configuration.setAllowedOrigins(Arrays.asList("https://newsdbase123-azcubjauakbjh7ar.canadacentral-01.azurewebsites.net"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS", "HEAD"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setExposedHeaders(Arrays.asList("X-Get-Header"));

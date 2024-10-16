@@ -1,6 +1,5 @@
 package com.example.NewBackEnd.service;
 
-
 import com.example.NewBackEnd.dto.request.user.CreateUserRequest;
 import com.example.NewBackEnd.dto.request.user.LoginRequest;
 import com.example.NewBackEnd.dto.request.user.UpdateUserRequest;
@@ -10,9 +9,8 @@ import com.example.NewBackEnd.exception.BaseException;
 
 import java.util.UUID;
 
-//public interface IUserService extends IGenericService<UserResponse> {
-    public interface IUserService {
+public interface IUserService extends IGenericService<UserResponse> {
     JwtAuthenticationResponse login(LoginRequest loginRequest) throws BaseException;
-//    JwtAuthenticationResponse create(CreateUserRequest createUserRequest) throws BaseException;
-//    UserResponse updateUser(UUID userId, UpdateUserRequest updateUserRequest) throws BaseException;
+    JwtAuthenticationResponse create(CreateUserRequest createUserRequest) throws BaseException;
+    UserResponse updateUser(UUID userId, UpdateUserRequest updateUserRequest) throws BaseException;
 }
