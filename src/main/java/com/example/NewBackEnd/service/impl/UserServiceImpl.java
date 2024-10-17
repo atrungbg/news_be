@@ -9,15 +9,21 @@ import com.example.NewBackEnd.dto.response.JwtAuthenticationResponse;
 import com.example.NewBackEnd.dto.response.user.UserResponse;
 import com.example.NewBackEnd.entity.User;
 import com.example.NewBackEnd.enums.ErrorCode;
+import com.example.NewBackEnd.enums.Role;
 import com.example.NewBackEnd.exception.BaseException;
 import com.example.NewBackEnd.model.PagingModel;
 import com.example.NewBackEnd.repository.UserRepository;
 import com.example.NewBackEnd.service.IJWTService;
 import com.example.NewBackEnd.service.IUserService;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,10 +33,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +51,8 @@ public class UserServiceImpl implements IUserService {
     PasswordEncoder passwordEncoder;
     @Autowired
     private ModelMapper modelMapper;
+    @Value("${google.client.id}")
+    private String googleClientId;
 
     @Override
     public UserResponse findById(UUID id) throws BaseException {
@@ -237,6 +244,38 @@ public class UserServiceImpl implements IUserService {
             if (baseException instanceof BaseException) {
                 throw baseException;
             }
+            throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
+        }
+    }
+
+    @Override
+    public UserResponse loginGoogle(String token) throws BaseException {
+        try {
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
+                    .setAudience(Collections.singletonList(googleClientId))
+                    .build();
+
+            GoogleIdToken idToken = verifier.verify(token);
+            if (idToken == null) {
+                throw new BaseException(ErrorCode.ERROR_500.getCode(), "Invalid Google token", "Token không hợp lệ");
+            }
+
+            GoogleIdToken.Payload payload = idToken.getPayload();
+            String email = payload.getEmail();
+            String name = (String) payload.get("name");
+
+            User user = userRepository.findByEmail(email)
+                    .orElseGet(() -> {
+                        User newUser = new User();
+                        newUser.setEmail(email);
+                        newUser.setFullName(name);
+                        newUser.setRole(Role.USER.name());
+                        return userRepository.save(newUser);
+                    });
+
+            return modelMapper.map(user, UserResponse.class);
+
+        }catch (Exception baseException) {
             throw new BaseException(ErrorCode.ERROR_500.getCode(), baseException.getMessage(), ErrorCode.ERROR_500.getMessage());
         }
     }

@@ -31,13 +31,8 @@ public class Note extends BaseEntity{
     @Column(name = "updatedAt")
     private LocalDateTime updatedAt;
 
-    @ManyToMany
-    @JoinTable(
-            name = "NoteTags",
-            joinColumns = @JoinColumn(name = "noteId"),
-            inverseJoinColumns = @JoinColumn(name = "tagId")
-    )
-    private List<Tag> tags;
+    @OneToMany(mappedBy = "note", cascade = CascadeType.ALL)
+    private List<NoteTag> noteTags;
 
     @OneToMany(mappedBy = "note", cascade = CascadeType.ALL)
     private List<Attachment> attachments;

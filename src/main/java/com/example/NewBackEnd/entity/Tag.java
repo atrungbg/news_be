@@ -1,10 +1,10 @@
 package com.example.NewBackEnd.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -13,4 +13,7 @@ import lombok.Setter;
 public class Tag extends BaseEntity{
     @Column(nullable = false, unique = true, length = 100)
     private String tagName;
+
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
+    private List<NoteTag> noteTags;
 }

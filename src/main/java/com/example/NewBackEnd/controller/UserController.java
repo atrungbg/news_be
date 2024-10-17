@@ -34,7 +34,12 @@ public class UserController {
         return userService.login(request);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Login with google", description = "API login with google")
+    @PostMapping(value = ConstAPI.AuthenticationAPI.LOGIN_WITH_GOOGLE)
+    public UserResponse loginGoogle(@RequestParam("token") String token) throws BaseException {
+        return userService.loginGoogle(token);
+    }
+
     @Operation(summary = "Create account", description = "API create new account")
     @PostMapping(value = ConstAPI.UserAPI.CREATE_ACCOUNT/*, consumes = MediaType.MULTIPART_FORM_DATA_VALUE ,produces = MediaType.APPLICATION_JSON_VALUE*/)
     public JwtAuthenticationResponse create(@Valid @RequestBody CreateUserRequest createUserRequest) throws BaseException {
