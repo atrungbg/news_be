@@ -46,28 +46,24 @@ public class UserController {
         return userService.create(createUserRequest);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary =  "Get account by id", description = "API get account by id")
     @GetMapping(value = ConstAPI.UserAPI.GET_ACCOUNT_BY_ID + "{id}")
     public UserResponse findById(@PathVariable("id") UUID id) throws BaseException {
         return userService.findById(id);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary =  "Get all user", description = "API get all user")
     @GetMapping(value = ConstAPI.UserAPI.GET_ALL_ACCOUNT)
     public PagingModel<UserResponse> getAll(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         return userService.getAll(page, limit);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary =  "Get all user", description = "API get all user")
     @GetMapping(value = ConstAPI.UserAPI.GET_ALL_ACCOUNT_ACTIVE)
     public PagingModel<UserResponse> getAllByStatusIsActive(@RequestParam(value = "page", required = false) Integer page, @RequestParam(value = "limit", required = false) Integer limit) throws BaseException {
         return userService.findAllByStatusTrue(page, limit);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Update user", description = "API update user")
     @PatchMapping(value = ConstAPI.UserAPI.UPDATE_USER + "/{id}")
     public UserResponse updateUser(@PathVariable("userId") UUID userId, @Valid @RequestBody UpdateUserRequest updateUserRequest) throws BaseException {

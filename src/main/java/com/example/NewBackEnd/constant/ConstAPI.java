@@ -43,4 +43,13 @@ public class ConstAPI {
         public static final String UPDATE_NOTE_TAG = "api/v1/note-tag/";
     }
 
+    public static class AttachmentAPI {
+        public static final String CREATE_ATTACHMENT = "api/v1/attachment";
+        public static final String GET_ALL_ATTACHMENTS = "api/v1/attachment";
+        public static final String GET_ALL_ATTACHMENTS_BY_STATUS_ACTIVE = "api/v1/attachment-active";
+        public static final String GET_ATTACHMENT_BY_ID = "api/v1/attachment/";
+        public static final String DELETE_ATTACHMENT = "api/v1/attachment/";
+        public static final String UPDATE_ATTACHMENT = "api/v1/attachment/";
+    }
+
 }
