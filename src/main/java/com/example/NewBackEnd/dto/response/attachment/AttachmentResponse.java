@@ -13,6 +13,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AttachmentResponse extends BaseResponse {
-    private String url;
+    private String fileUrl;
     private UUID noteId;
 }

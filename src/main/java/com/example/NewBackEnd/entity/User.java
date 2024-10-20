@@ -29,13 +29,13 @@ public class User extends BaseEntity implements UserDetails {
     @Size(max = 100)
     @NotNull
     @Nationalized
-    @Column(name = "Email", nullable = false, length = 100)
+    @Column(name = "Email", length = 100)
     private String email;
 
     @Size(max = 255)
     @NotNull
     @Nationalized
-    @Column(name = "Password", nullable = false)
+    @Column(name = "Password")
     private String password;
 
     @Size(max = 100)
