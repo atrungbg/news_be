@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="red">#F11010</color>
+    <color name="greenDam">#00a86b</color>
+    <color name="xamvang">#fef7e8</color>
+    <color name="xamden">#C6C6C6</color>
+    <color name="backgroundExpense">#fd3c4a</color>
+    <color name="blue">#CE465FEA</color>
+    <color name="xam">#D6D6D6</color>
+    <color name="gray">#91919F</color>
+    <color name="border">#0A000000</color>
+</resources>
