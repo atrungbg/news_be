@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "562135580761",
+    "project_id": "inner-nuance-439110-d8",
+    "storage_bucket": "inner-nuance-439110-d8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:562135580761:android:e066ef6c783d46fa2c3148",
+        "android_client_info": {
+          "package_name": "com.fpt.hungnm.assigmentfinal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCJqa0BtW8V_J9utSijLxhef0ttg2_tf4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+          }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
