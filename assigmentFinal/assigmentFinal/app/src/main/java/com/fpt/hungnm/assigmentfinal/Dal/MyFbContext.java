@@ -711,6 +711,61 @@ public class MyFbContext {
         }
     }
 
+    public void getAllTransactionsByString(OnTransactionFetchListener1 listener) {
+        List<Transaction> transactions = new ArrayList<>();
+        // Lấy tất cả giao dịch được sắp xếp theo ngày tạo
+        transactionRef.orderByChild("createDate").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Transaction transaction = snapshot.getValue(Transaction.class);
+                    if (transaction != null) {
+                        transactions.add(transaction);
+                    }
+                }
+
+                // Thực hiện thống kê và gửi báo cáo
+                String report = generateReport(transactions);
+                listener.onSuccess(report); // Gọi phương thức onSuccess với báo cáo
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Failed to fetch transactions", error.toException());
+                listener.onFailure(error.toException());
+            }
+        });
+    }
+
+    // Giao diện callback
+    public interface OnTransactionFetchListener1 {
+        void onSuccess(String report); // Phương thức chỉ trả về báo cáo
+        void onFailure(Exception e);
+    }
+
+
+    private String generateReport(List<Transaction> transactions) {
+        double totalAmount = 0.0;
+        int transactionCount = transactions.size();
+
+        for (Transaction transaction : transactions) {
+            try {
+                // Nếu getPrice() trả về một String, chuyển đổi sang double
+                double price = Double.parseDouble(transaction.getPrice());
+                totalAmount += price;
+            } catch (NumberFormatException e) {
+                // Xử lý trường hợp không thể chuyển đổi được giá trị
+                Log.e(TAG, "Failed to parse price: " + transaction.getPrice(), e);
+            }
+        }
+
+        // Xây dựng báo cáo thống kê
+        StringBuilder reportBuilder = new StringBuilder();
+        reportBuilder.append("Tổng số giao dịch: ").append(transactionCount).append("\n");
+        reportBuilder.append("Tổng số tiền: ").append(totalAmount).append("\n");
+
+        return reportBuilder.toString();
+    }
 
 
     public void getTransactionByMonth(int month, FirebaseTransactionCallback callback) {

@@ -52,6 +52,7 @@ public class Home extends AppCompatActivity implements TransitionRecyclerViewAda
     private ImageButton btnLogout;
     private boolean isLoggedIn = true;
     private Transaction transactionClicked;
+    private ImageButton btnChat;
 
     private int month;
     private Button viewAll;

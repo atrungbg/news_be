@@ -1,11 +1,14 @@
 package com.fpt.hungnm.assigmentfinal;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.PorterDuff;
@@ -23,10 +26,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.fpt.hungnm.assigmentfinal.Adapter.TransitionSearchAdapter;
+import com.fpt.hungnm.assigmentfinal.ChatGptApi.ChatGptApi;
+import com.fpt.hungnm.assigmentfinal.ChatGptApi.ChatGptRequest;
+import com.fpt.hungnm.assigmentfinal.ChatGptApi.ChatGptResponse;
+import com.fpt.hungnm.assigmentfinal.ChatGptApi.RetrofitClientInstance;
 import com.fpt.hungnm.assigmentfinal.Dal.MyFbContext;
 import com.fpt.hungnm.assigmentfinal.Model.Budget;
 import com.fpt.hungnm.assigmentfinal.Model.Category;
 import com.fpt.hungnm.assigmentfinal.Model.Transaction;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,6 +42,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import retrofit2.Call;
 
 public class MainTransaction extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG ="HungnmError";
@@ -57,7 +67,7 @@ public class MainTransaction extends AppCompatActivity implements View.OnClickLi
     private TextView tvError;
 
     List<Transaction> list;
-
+    FloatingActionButton fab;
     List<Category> categories;
 
     @Override
@@ -199,16 +209,85 @@ public class MainTransaction extends AppCompatActivity implements View.OnClickLi
     }
 
     private void bindingAction() {
-        try{
-            dbContext= new MyFbContext();
+        try {
+            dbContext = new MyFbContext();
+
             btnHome.setOnClickListener(this::goToHome);
             btnAccount.setOnClickListener(this::goToAccount);
             btnSearch.setOnClickListener(this::onSearch);
-        }catch (Exception ex){
-            Log.e(TAG, "MainTransaction - onCreate - " + ex.getMessage());
+
+            // Đặt listener cho fab
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showFinancialAdviceDialog(); // Gọi phương thức để hiển thị lời khuyên tài chính
+                }
+            });
+        } catch (Exception ex) {
+            Log.e(TAG, "MainTransaction - bindingAction - " + ex.getMessage());
         }
     }
 
+    private void showFinancialAdviceDialog() {
+        ChatGptApi apiService = RetrofitClientInstance.getRetrofitInstance().create(ChatGptApi.class);
+
+        // Gọi phương thức để lấy báo cáo
+        dbContext.getAllTransactionsByString(new MyFbContext.OnTransactionFetchListener1() {
+            @Override
+            public void onSuccess(String report) {
+                // Tạo chuỗi thông điệp từ báo cáo
+                String userMessage = "Đây là thông tin tài chính của tôi: " + report + ". Hãy đọc chi tiết về tình hình doanh số với con số cụ thể và đưa ra về lời khuyên tài chính";
+
+                // Tạo danh sách message cho ChatGPT
+                List<ChatGptRequest.Message> messages = new ArrayList<>();
+                messages.add(new ChatGptRequest.Message("user", userMessage));
+
+                // Tạo yêu cầu cho ChatGPT
+                ChatGptRequest request = new ChatGptRequest("gpt-3.5-turbo", messages);
+
+                // Gọi API
+                Call<ChatGptResponse> call = apiService.getAllTransactionsByString(request);
+                call.enqueue(new Callback<ChatGptResponse>() {
+                    @Override
+                    public void onResponse(Call<ChatGptResponse> call, Response<ChatGptResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            // Lấy nội dung lời khuyên
+                            String advice = response.body().getChoices().get(0).getMessage().getContent();
+
+                            // Hiển thị lời khuyên trong hộp thoại
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MainTransaction.this);
+                            builder.setTitle("Lời khuyên tài chính");
+                            builder.setMessage(advice);
+                            builder.setPositiveButton("OK", null);
+                            builder.show();
+                        } else {
+                            // Xử lý lỗi nếu cần
+                            showErrorDialog("Không thể lấy lời khuyên tài chính");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ChatGptResponse> call, Throwable t) {
+                        // Xử lý lỗi khi gọi API
+                        showErrorDialog("Lỗi mạng: " + t.getMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                showErrorDialog("Lỗi: " + e.getMessage());
+            }
+        });
+    }
+
+    private void showErrorDialog(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Lỗi");
+        builder.setMessage(message);
+        builder.setPositiveButton("OK", null);
+        builder.show();
+    }
     public static boolean compareDates(String dateString1, String dateString2) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         try {
@@ -249,21 +328,23 @@ public class MainTransaction extends AppCompatActivity implements View.OnClickLi
     }
 
     private void bindingView() {
-        try{
+        try {
+            fab = findViewById(R.id.fab_financial_advice); // Sửa lại dòng này
             rcvTransaction = findViewById(R.id.rcv_main_transaction);
             btnHome = findViewById(R.id.img_transaction_btnHome);
             btnAccount = findViewById(R.id.img_transaction_btnAccount);
             btnTransaction = findViewById(R.id.img_transaction_btnTransaction);
-            edtTitle =findViewById(R.id.edt_transaction_title);
+            edtTitle = findViewById(R.id.edt_transaction_title);
             spCategory = findViewById(R.id.sp_transation_category);
             edtStartDate = findViewById(R.id.edt_transaction_fromDate);
             edtToDate = findViewById(R.id.edt_transaction_toDate);
             btnSearch = findViewById(R.id.btn_transaction_search);
             tvError = findViewById(R.id.tv_transaction_error);
-        }catch (Exception ex){
+        } catch (Exception ex) {
             Log.e(TAG, "MainTransaction - bindingView - " + ex.getMessage());
         }
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
