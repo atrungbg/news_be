@@ -23,7 +23,7 @@ public class RetrofitClientInstance {
         return new OkHttpClient.Builder()
                 .addInterceptor(chain -> {
                     Request request = chain.request().newBuilder()
-                            .addHeader("Authorization", "Bearer sk-JyYYfgfCtAKbjG3W_P4eBp2H7TBblwScb0lLyk2owuT3BlbkFJTD04aUgNxxCkOVK65jP1c9i0i4vT_NFDgBfD5hho0A") // Thay YOUR_API_KEY_HERE bằng API key của bạn
+                            .addHeader("Authorization", "Bearer ") // Thay YOUR_API_KEY_HERE bằng API key của bạn
                             .build();
                     return chain.proceed(request);
                 })
